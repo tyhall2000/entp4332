@@ -1,0 +1,676 @@
+<title>Tip Splitter</title>
+<style>
+  :root {
+    --paper: #F4F1EA;
+    --ink: #1C1A17;
+    --accent: #C2452D;
+    --muted: #8A8175;
+    --line: #DDD6C8;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --mono: Menlo, Consolas, ui-monospace, 'SFMono-Regular', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--serif);
+    padding: 48px 20px 80px;
+  }
+
+  .receipt {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: normal;
+  }
+
+  .sub {
+    margin: 6px 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  hr.tear {
+    border: none;
+    border-top: 1px dashed var(--line);
+    margin: 22px 0;
+  }
+
+  .label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 0.14em;
+    text-transform: lowercase;
+    margin-bottom: 6px;
+  }
+
+  .field-row {
+    margin-bottom: 16px;
+  }
+
+  .amount-input {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    padding: 4px 0;
+  }
+
+  .amount-input span.sign {
+    font-family: var(--mono);
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  input[type="number"] {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--ink);
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    text-align: right;
+  }
+
+  .field-row > input[type="number"] {
+    border-bottom: 1px solid var(--line);
+    padding: 4px 0;
+    text-align: right;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .section-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-variant: small-caps;
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+  }
+
+  .tip-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .tip-buttons button {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 8px 0;
+    cursor: pointer;
+  }
+
+  .tip-buttons button.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .custom-tip-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    padding: 4px 0;
+  }
+
+  .custom-tip-row .label {
+    margin-bottom: 0;
+  }
+
+  .custom-tip-row input[type="number"] {
+    width: 70px;
+  }
+
+  .toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .toggle-row input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .uneven-rows {
+    margin-top: 16px;
+  }
+
+  .person-row .label {
+    text-transform: none;
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+
+  .result-row .label-text {
+    font-variant: small-caps;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .result-row .mono {
+    font-family: var(--mono);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .result-row.muted .mono,
+  .result-row.muted .label-text {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
+
+  .per-person {
+    text-align: center;
+  }
+
+  .per-person .label-text {
+    display: block;
+    font-variant: small-caps;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  .big-amount {
+    font-family: var(--mono);
+    font-size: 3rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .person-list {
+    text-align: left;
+  }
+
+  .person-list .result-row .label-text {
+    color: var(--ink);
+    font-variant: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    font-family: var(--serif);
+    font-size: 0.9rem;
+  }
+
+  .person-list .result-row .mono {
+    font-size: 1.3rem;
+    color: var(--accent);
+  }
+
+  .copy-btn {
+    display: block;
+    width: 100%;
+    font-family: var(--serif);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    padding: 12px 0;
+    cursor: pointer;
+  }
+
+  .copy-btn:active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .copy-confirm {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  footer.stamp {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+</style>
+
+<div class="receipt">
+  <header>
+    <h1>Group Check</h1>
+    <p class="sub">tip &amp; split calculator</p>
+  </header>
+
+  <section class="inputs">
+    <div class="field-row">
+      <label class="label" for="bill">bill total</label>
+      <div class="amount-input">
+        <span class="sign">$</span>
+        <input id="bill" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="field-row">
+      <label class="label" for="people">number of people</label>
+      <input id="people" type="number" inputmode="numeric" min="1" step="1" value="2">
+    </div>
+  </section>
+
+  <hr class="tear">
+
+  <section class="tip-section">
+    <label class="section-label">tip percentage</label>
+    <div class="tip-buttons" id="tipButtons">
+      <button type="button" data-tip="15">15%</button>
+      <button type="button" data-tip="18">18%</button>
+      <button type="button" data-tip="20" class="active">20%</button>
+      <button type="button" data-tip="25">25%</button>
+    </div>
+    <div class="custom-tip-row">
+      <label class="label" for="customTip">custom %</label>
+      <input id="customTip" type="number" inputmode="decimal" min="0" step="1" placeholder="&mdash;">
+    </div>
+  </section>
+
+  <hr class="tear">
+
+  <section class="toggles">
+    <label class="toggle-row">
+      <span>uneven split</span>
+      <input type="checkbox" id="unevenToggle">
+    </label>
+    <label class="toggle-row">
+      <span>round up</span>
+      <input type="checkbox" id="roundToggle">
+    </label>
+  </section>
+
+  <div class="uneven-rows" id="unevenRows" hidden></div>
+
+  <hr class="tear">
+
+  <section class="results">
+    <div class="result-row">
+      <span class="label-text">tip</span>
+      <span class="mono" id="tipAmount">$0.00</span>
+    </div>
+    <div class="result-row">
+      <span class="label-text">grand total</span>
+      <span class="mono" id="grandTotal">$0.00</span>
+    </div>
+    <div class="result-row muted" id="surplusRow" hidden>
+      <span class="label-text">extra tip (rounding)</span>
+      <span class="mono" id="surplusAmount">$0.00</span>
+    </div>
+  </section>
+
+  <hr class="tear">
+
+  <section class="per-person" id="perPersonSection"></section>
+
+  <hr class="tear">
+
+  <button class="copy-btn" id="copyBtn">copy for group chat</button>
+  <p class="copy-confirm" id="copyConfirm" hidden>copied to clipboard</p>
+
+  <footer class="stamp">thank you &mdash; come again</footer>
+</div>
+
+<script>
+  var billInput = document.getElementById('bill');
+  var peopleInput = document.getElementById('people');
+  var customTipInput = document.getElementById('customTip');
+  var tipButtons = document.getElementById('tipButtons');
+  var unevenToggle = document.getElementById('unevenToggle');
+  var roundToggle = document.getElementById('roundToggle');
+  var unevenRows = document.getElementById('unevenRows');
+  var tipAmountEl = document.getElementById('tipAmount');
+  var grandTotalEl = document.getElementById('grandTotal');
+  var surplusRow = document.getElementById('surplusRow');
+  var surplusAmountEl = document.getElementById('surplusAmount');
+  var perPersonSection = document.getElementById('perPersonSection');
+  var copyBtn = document.getElementById('copyBtn');
+  var copyConfirm = document.getElementById('copyConfirm');
+
+  var selectedTipPercent = 20;
+  var extras = [];
+  var current = null;
+
+  function money(n) {
+    if (!isFinite(n)) n = 0;
+    return '$' + n.toFixed(2);
+  }
+
+  function getBill() {
+    var v = parseFloat(billInput.value);
+    if (!isFinite(v) || v < 0) return 0;
+    return v;
+  }
+
+  function getPeopleCount() {
+    var v = parseInt(peopleInput.value, 10);
+    if (!isFinite(v) || v < 1) return 1;
+    return v;
+  }
+
+  function ensureExtrasLength(n) {
+    while (extras.length < n) extras.push(0);
+    extras.length = n;
+  }
+
+  function setActiveTipButton(percent) {
+    var buttons = tipButtons.querySelectorAll('button');
+    for (var i = 0; i < buttons.length; i++) {
+      var btnPercent = parseFloat(buttons[i].getAttribute('data-tip'));
+      if (btnPercent === percent) {
+        buttons[i].classList.add('active');
+      } else {
+        buttons[i].classList.remove('active');
+      }
+    }
+  }
+
+  tipButtons.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    selectedTipPercent = parseFloat(btn.getAttribute('data-tip'));
+    customTipInput.value = '';
+    setActiveTipButton(selectedTipPercent);
+    calculate();
+  });
+
+  customTipInput.addEventListener('input', function () {
+    var v = parseFloat(customTipInput.value);
+    if (customTipInput.value !== '' && isFinite(v) && v >= 0) {
+      selectedTipPercent = v;
+      setActiveTipButton(-1);
+    }
+    calculate();
+  });
+
+  function renderUnevenRows() {
+    var people = getPeopleCount();
+    ensureExtrasLength(people);
+
+    if (!unevenToggle.checked) {
+      unevenRows.hidden = true;
+      unevenRows.innerHTML = '';
+      return;
+    }
+
+    unevenRows.hidden = false;
+    unevenRows.innerHTML = '';
+
+    for (var i = 0; i < people; i++) {
+      var row = document.createElement('div');
+      row.className = 'field-row person-row';
+
+      var label = document.createElement('label');
+      label.className = 'label';
+      label.textContent = 'person ' + (i + 1) + ' extra';
+
+      var amountWrap = document.createElement('div');
+      amountWrap.className = 'amount-input';
+
+      var sign = document.createElement('span');
+      sign.className = 'sign';
+      sign.textContent = '$';
+
+      var input = document.createElement('input');
+      input.type = 'number';
+      input.min = '0';
+      input.step = '0.01';
+      input.placeholder = '0.00';
+      input.setAttribute('data-index', i);
+      input.value = extras[i] ? extras[i] : '';
+
+      input.addEventListener('input', function (e) {
+        var idx = parseInt(e.target.getAttribute('data-index'), 10);
+        var v = parseFloat(e.target.value);
+        extras[idx] = (isFinite(v) && v >= 0) ? v : 0;
+        calculate();
+      });
+
+      amountWrap.appendChild(sign);
+      amountWrap.appendChild(input);
+      row.appendChild(label);
+      row.appendChild(amountWrap);
+      unevenRows.appendChild(row);
+    }
+  }
+
+  function roundUpToDollar(raw) {
+    var cents = Math.round(raw * 100) / 100;
+    return Math.ceil(cents - 1e-9);
+  }
+
+  function calculate() {
+    var bill = getBill();
+    var people = getPeopleCount();
+    ensureExtrasLength(people);
+
+    var tip = bill * (selectedTipPercent / 100);
+    var grandTotal = bill + tip;
+
+    var activeExtras = unevenToggle.checked ? extras.slice(0, people) : new Array(people).fill(0);
+    var sumExtras = activeExtras.reduce(function (a, b) { return a + b; }, 0);
+    var sharedPool = grandTotal - sumExtras;
+    var evenShare = sharedPool / people;
+
+    var rawShares = [];
+    for (var i = 0; i < people; i++) {
+      rawShares.push(evenShare + activeExtras[i]);
+    }
+
+    var finalShares = rawShares.slice();
+    var surplus = 0;
+
+    if (roundToggle.checked) {
+      var sumRaw = 0;
+      var sumRounded = 0;
+      finalShares = rawShares.map(function (s) {
+        sumRaw += s;
+        var r = roundUpToDollar(s);
+        sumRounded += r;
+        return r;
+      });
+      surplus = sumRounded - sumRaw;
+    }
+
+    current = {
+      bill: bill,
+      people: people,
+      tipPercent: selectedTipPercent,
+      tip: tip,
+      grandTotal: grandTotal,
+      uneven: unevenToggle.checked,
+      round: roundToggle.checked,
+      shares: finalShares,
+      evenShare: evenShare,
+      surplus: surplus
+    };
+
+    render();
+  }
+
+  function render() {
+    tipAmountEl.textContent = money(current.tip);
+    grandTotalEl.textContent = money(current.grandTotal);
+
+    if (current.round) {
+      surplusRow.hidden = false;
+      surplusAmountEl.textContent = money(current.surplus);
+    } else {
+      surplusRow.hidden = true;
+    }
+
+    perPersonSection.innerHTML = '';
+
+    if (current.uneven) {
+      var list = document.createElement('div');
+      list.className = 'person-list';
+
+      var heading = document.createElement('span');
+      heading.className = 'label-text';
+      heading.textContent = 'each person owes';
+      list.appendChild(heading);
+
+      for (var i = 0; i < current.people; i++) {
+        var row = document.createElement('div');
+        row.className = 'result-row';
+
+        var label = document.createElement('span');
+        label.className = 'label-text';
+        label.textContent = 'person ' + (i + 1);
+
+        var amount = document.createElement('span');
+        amount.className = 'mono';
+        amount.textContent = money(current.shares[i]);
+
+        row.appendChild(label);
+        row.appendChild(amount);
+        list.appendChild(row);
+      }
+
+      perPersonSection.appendChild(list);
+    } else {
+      var wrap = document.createElement('div');
+
+      var label = document.createElement('span');
+      label.className = 'label-text';
+      label.textContent = 'amount per person';
+
+      var big = document.createElement('div');
+      big.className = 'big-amount';
+      big.textContent = money(current.shares[0] !== undefined ? current.shares[0] : current.evenShare);
+
+      wrap.appendChild(label);
+      wrap.appendChild(big);
+      perPersonSection.appendChild(wrap);
+    }
+  }
+
+  function buildSummary() {
+    var lines = [];
+    lines.push('Bill: ' + money(current.bill));
+    lines.push('Tip (' + current.tipPercent + '%): ' + money(current.tip));
+    lines.push('Total: ' + money(current.grandTotal));
+    lines.push('Split ' + current.people + ' ways');
+    lines.push('');
+    for (var i = 0; i < current.people; i++) {
+      lines.push('Person ' + (i + 1) + ': ' + money(current.shares[i]));
+    }
+    if (current.round) {
+      lines.push('');
+      lines.push('Extra tip from rounding: ' + money(current.surplus));
+    }
+    return lines.join('\n');
+  }
+
+  function showCopyConfirm() {
+    copyConfirm.hidden = false;
+    clearTimeout(showCopyConfirm._t);
+    showCopyConfirm._t = setTimeout(function () {
+      copyConfirm.hidden = true;
+    }, 2200);
+  }
+
+  function fallbackCopy(text) {
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    var ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch (err) {
+      ok = false;
+    }
+    document.body.removeChild(textarea);
+    return ok;
+  }
+
+  copyBtn.addEventListener('click', function () {
+    var text = buildSummary();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopyConfirm, function () {
+        if (fallbackCopy(text)) showCopyConfirm();
+      });
+    } else {
+      if (fallbackCopy(text)) showCopyConfirm();
+    }
+  });
+
+  billInput.addEventListener('input', calculate);
+  peopleInput.addEventListener('input', function () {
+    renderUnevenRows();
+    calculate();
+  });
+  unevenToggle.addEventListener('change', function () {
+    renderUnevenRows();
+    calculate();
+  });
+  roundToggle.addEventListener('change', calculate);
+
+  renderUnevenRows();
+  calculate();
+</script>

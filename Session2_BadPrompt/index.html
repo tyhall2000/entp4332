@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip Splitter</title>
+<style>
+  :root {
+    --bg-top: #0f2027;
+    --bg-mid: #203a43;
+    --bg-bot: #2c5364;
+    --card: #ffffff;
+    --ink: #1b2430;
+    --ink-soft: #6b7686;
+    --line: #e7ebf0;
+    --field-bg: #f4f6f9;
+    --accent: #0fb98d;
+    --accent-dark: #0a9370;
+    --accent-soft: #e4faf3;
+    --danger: #e0563f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.25rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: radial-gradient(circle at 20% 15%, var(--bg-mid), var(--bg-top) 60%),
+                linear-gradient(160deg, var(--bg-top), var(--bg-bot));
+    background-blend-mode: normal;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .app-title {
+    text-align: center;
+    color: #eaf6f2;
+    margin-bottom: 1.4rem;
+  }
+  .app-title .kicker {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #9fd8c8;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+  .app-title h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 800;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 1.9rem 1.7rem 1.6rem;
+    box-shadow: 0 20px 45px rgba(6, 20, 25, 0.35), 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .field {
+    margin-bottom: 1.35rem;
+  }
+  .field-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .field-label .value {
+    font-size: 0.95rem;
+    color: var(--accent-dark);
+    font-weight: 800;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .amount-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--field-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.2rem 0.9rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .amount-input:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .amount-input .prefix {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    font-weight: 700;
+    margin-right: 0.4rem;
+  }
+  .amount-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 0.65rem 0;
+    min-width: 0;
+    font-family: inherit;
+  }
+  .amount-input input::placeholder { color: #c3cbd6; }
+
+  .tip-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+  }
+  .tip-btn {
+    padding: 0.65rem 0.4rem;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--field-bg);
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s, transform 0.06s;
+  }
+  .tip-btn:hover { border-color: var(--accent); }
+  .tip-btn:active { transform: scale(0.97); }
+  .tip-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
+  }
+  .tip-btn.custom {
+    grid-column: span 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: var(--field-bg);
+  }
+  .tip-btn.custom input {
+    width: 4.2rem;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1rem;
+    font-weight: 700;
+    color: inherit;
+    text-align: center;
+    font-family: inherit;
+  }
+  .tip-btn.custom.active input::placeholder { color: rgba(255,255,255,0.75); }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--field-bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.35rem 0.5rem;
+  }
+  .stepper button {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 9px;
+    border: none;
+    background: var(--card);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .stepper button:active { transform: scale(0.94); }
+  .stepper .count {
+    font-size: 1.3rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .stepper .count svg { width: 1.2rem; height: 1.2rem; opacity: 0.55; }
+
+  .results {
+    margin-top: 0.4rem;
+    background: linear-gradient(155deg, var(--accent-dark), var(--accent));
+    border-radius: 16px;
+    padding: 1.5rem 1.5rem 1.35rem;
+    color: #ffffff;
+  }
+  .results .per-person {
+    text-align: center;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+  }
+  .results .per-person .label {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    font-weight: 700;
+  }
+  .results .per-person .amount {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-top: 0.1rem;
+  }
+  .results .per-person .amount small {
+    font-size: 1.2rem;
+    font-weight: 700;
+    opacity: 0.8;
+  }
+  .results .breakdown {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.92rem;
+    padding: 0.3rem 0;
+  }
+  .results .breakdown span:first-child { opacity: 0.85; }
+  .results .breakdown strong { font-weight: 700; }
+
+  .reset-row {
+    text-align: center;
+    margin-top: 1.1rem;
+  }
+  .reset-row button {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0.3rem;
+  }
+  .reset-row button:hover { color: var(--danger); }
+
+  footer {
+    text-align: center;
+    color: rgba(234, 246, 242, 0.55);
+    font-size: 0.78rem;
+    margin-top: 1.4rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="app-title">
+    <span class="kicker">Split it fair</span>
+    <h1>Tip Splitter</h1>
+  </div>
+
+  <div class="card">
+
+    <div class="field">
+      <div class="field-label"><span>Bill Amount</span></div>
+      <div class="amount-input">
+        <span class="prefix">$</span>
+        <input type="number" id="billInput" placeholder="0.00" min="0" step="0.01" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span>Tip</span><span class="value" id="tipPctLabel">15%</span></div>
+      <div class="tip-grid" id="tipGrid">
+        <button type="button" class="tip-btn" data-pct="10">10%</button>
+        <button type="button" class="tip-btn active" data-pct="15">15%</button>
+        <button type="button" class="tip-btn" data-pct="20">20%</button>
+        <button type="button" class="tip-btn" data-pct="18">18%</button>
+        <button type="button" class="tip-btn" data-pct="25">25%</button>
+        <button type="button" class="tip-btn" data-pct="0">No tip</button>
+        <label class="tip-btn custom" id="customTipBtn">
+          Custom
+          <input type="number" id="customTipInput" placeholder="%" min="0" max="100" inputmode="numeric">
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label"><span>Split Between</span></div>
+      <div class="stepper">
+        <button type="button" id="decPeople" aria-label="Decrease people">&minus;</button>
+        <div class="count">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <span id="peopleCount">2</span>
+        </div>
+        <button type="button" id="incPeople" aria-label="Increase people">+</button>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="per-person">
+        <div class="label">Each Person Pays</div>
+        <div class="amount"><small>$</small><span id="perPerson">0.00</span></div>
+      </div>
+      <div class="breakdown">
+        <span>Bill total</span>
+        <strong id="outBill">$0.00</strong>
+      </div>
+      <div class="breakdown">
+        <span>Tip amount</span>
+        <strong id="outTip">$0.00</strong>
+      </div>
+      <div class="breakdown">
+        <span>Total with tip</span>
+        <strong id="outTotal">$0.00</strong>
+      </div>
+      <div class="breakdown">
+        <span>Tip per person</span>
+        <strong id="outTipPerPerson">$0.00</strong>
+      </div>
+    </div>
+
+    <div class="reset-row">
+      <button type="button" id="resetBtn">Reset</button>
+    </div>
+
+  </div>
+
+  <footer>No server, no tracking &mdash; everything runs in your browser.</footer>
+</div>
+
+<script>
+(function () {
+  var billInput = document.getElementById('billInput');
+  var customTipInput = document.getElementById('customTipInput');
+  var customTipBtn = document.getElementById('customTipBtn');
+  var tipGrid = document.getElementById('tipGrid');
+  var tipPctLabel = document.getElementById('tipPctLabel');
+  var peopleCountEl = document.getElementById('peopleCount');
+  var decPeople = document.getElementById('decPeople');
+  var incPeople = document.getElementById('incPeople');
+  var resetBtn = document.getElementById('resetBtn');
+
+  var state = {
+    tipPct: 15,
+    people: 2
+  };
+
+  function money(n) {
+    if (!isFinite(n)) n = 0;
+    return n.toFixed(2);
+  }
+
+  function getBill() {
+    var v = parseFloat(billInput.value);
+    return isNaN(v) || v < 0 ? 0 : v;
+  }
+
+  function setActivePreset(pct, sourceBtn) {
+    var btns = tipGrid.querySelectorAll('.tip-btn');
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    if (sourceBtn) sourceBtn.classList.add('active');
+  }
+
+  function recalc() {
+    var bill = getBill();
+    var pct = state.tipPct;
+    if (isNaN(pct) || pct < 0) pct = 0;
+    var people = state.people < 1 ? 1 : state.people;
+
+    var tip = bill * (pct / 100);
+    var total = bill + tip;
+    var perPerson = total / people;
+    var tipPerPerson = tip / people;
+
+    document.getElementById('perPerson').textContent = money(perPerson);
+    document.getElementById('outBill').textContent = '$' + money(bill);
+    document.getElementById('outTip').textContent = '$' + money(tip);
+    document.getElementById('outTotal').textContent = '$' + money(total);
+    document.getElementById('outTipPerPerson').textContent = '$' + money(tipPerPerson);
+    tipPctLabel.textContent = pct + '%';
+    peopleCountEl.textContent = people;
+  }
+
+  billInput.addEventListener('input', recalc);
+
+  tipGrid.addEventListener('click', function (e) {
+    var btn = e.target.closest('.tip-btn');
+    if (!btn || btn === customTipBtn) return;
+    var pct = parseFloat(btn.getAttribute('data-pct'));
+    state.tipPct = pct;
+    customTipInput.value = '';
+    setActivePreset(pct, btn);
+    recalc();
+  });
+
+  customTipInput.addEventListener('focus', function () {
+    setActivePreset(null, customTipBtn);
+  });
+
+  customTipInput.addEventListener('input', function () {
+    var v = parseFloat(customTipInput.value);
+    setActivePreset(null, customTipBtn);
+    state.tipPct = isNaN(v) ? 0 : v;
+    recalc();
+  });
+
+  decPeople.addEventListener('click', function () {
+    if (state.people > 1) state.people -= 1;
+    recalc();
+  });
+  incPeople.addEventListener('click', function () {
+    if (state.people < 100) state.people += 1;
+    recalc();
+  });
+
+  resetBtn.addEventListener('click', function () {
+    billInput.value = '';
+    customTipInput.value = '';
+    state.tipPct = 15;
+    state.people = 2;
+    setActivePreset(15, tipGrid.querySelector('[data-pct="15"]'));
+    recalc();
+  });
+
+  recalc();
+})();
+</script>
+
+</body>
+</html>
