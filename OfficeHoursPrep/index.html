@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Office Hours Prep</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card-bg: #ffffff;
+    --text: #1f2430;
+    --muted: #5b6270;
+    --border: #d8dce3;
+    --accent: #2f6f4f;
+    --accent-dark: #24583f;
+    --error: #b3261e;
+    --error-bg: #fbeaea;
+    --focus: #2f6f4f;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  header.app-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header.app-header h1 {
+    font-size: 1.5rem;
+    margin: 0 0 6px;
+  }
+
+  header.app-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    margin-bottom: 16px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field:last-child {
+    margin-bottom: 0;
+  }
+
+  .field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+
+  .field .hint {
+    display: block;
+    font-weight: normal;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 2px;
+    margin-bottom: 6px;
+  }
+
+  .required-mark {
+    color: var(--error);
+    margin-left: 2px;
+  }
+
+  input[type="text"], textarea {
+    width: 100%;
+    font: inherit;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    resize: vertical;
+  }
+
+  textarea {
+    min-height: 84px;
+  }
+
+  input[type="text"]:focus, textarea:focus {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+    border-color: var(--focus);
+  }
+
+  .field.has-error input,
+  .field.has-error textarea {
+    border-color: var(--error);
+    background: var(--error-bg);
+  }
+
+  .field-error {
+    display: none;
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 5px;
+  }
+
+  .field.has-error .field-error {
+    display: block;
+  }
+
+  #form-summary-error {
+    display: none;
+    background: var(--error-bg);
+    border: 1px solid var(--error);
+    color: var(--error);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 0.92rem;
+  }
+
+  #form-summary-error.visible {
+    display: block;
+  }
+
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  button {
+    font: inherit;
+    font-weight: 600;
+    padding: 12px 18px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    min-height: 44px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    flex: 1 1 auto;
+  }
+
+  .btn-primary:hover { background: var(--accent-dark); }
+
+  .btn-secondary {
+    background: #fff;
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { background: #f0f1f3; }
+
+  .btn-text {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent-dark);
+    padding: 10px 6px;
+  }
+
+  .btn-text:hover { text-decoration: underline; }
+
+  #outline-view h2 {
+    font-size: 1.15rem;
+    margin-top: 0;
+  }
+
+  .outline-block {
+    margin-bottom: 16px;
+  }
+
+  .outline-block:last-child { margin-bottom: 0; }
+
+  .outline-block h3 {
+    font-size: 0.95rem;
+    margin: 0 0 4px;
+    color: var(--accent-dark);
+  }
+
+  .outline-block .outline-text {
+    white-space: pre-wrap;
+    margin: 0;
+  }
+
+  .outline-block .outline-empty {
+    color: var(--muted);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .outline-block .outline-questions {
+    margin: 0;
+    padding-left: 22px;
+  }
+
+  .outline-block .outline-questions li {
+    margin-bottom: 6px;
+  }
+
+  .outline-block .outline-questions li:last-child {
+    margin-bottom: 0;
+  }
+
+  .example-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  #copy-confirm {
+    display: none;
+    font-size: 0.85rem;
+    color: var(--accent-dark);
+    margin-top: 8px;
+  }
+
+  #copy-confirm.visible { display: block; }
+
+  [hidden] { display: none !important; }
+
+  @media print {
+    body { background: #fff; }
+    header.app-header, #form-view, .btn-row, .example-note, #copy-confirm {
+      display: none !important;
+    }
+    .wrap { max-width: 100%; padding: 0; }
+    .card { border: none; padding: 0; }
+    #outline-view h2 { border-bottom: 2px solid #000; padding-bottom: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="app-header">
+    <h1>Office Hours Prep</h1>
+    <p>Organize your thoughts before you ask a professor for help.</p>
+  </header>
+
+  <section id="form-view">
+    <div class="card">
+      <div id="form-summary-error" role="alert"></div>
+
+      <form id="prep-form" novalidate>
+        <div class="field" id="field-course">
+          <label for="course">Course name</label>
+          <span class="hint">Optional</span>
+          <input type="text" id="course" name="course" maxlength="200">
+        </div>
+
+        <div class="field" id="field-topic">
+          <label for="topic">Topic or assignment<span class="required-mark">*</span></label>
+          <span class="hint">What is this about?</span>
+          <textarea id="topic" name="topic"></textarea>
+          <p class="field-error">Please fill in the topic or assignment.</p>
+        </div>
+
+        <div class="field" id="field-understand">
+          <label for="understand">What I understand so far</label>
+          <span class="hint">Optional &mdash; it's okay if this is short</span>
+          <textarea id="understand" name="understand"></textarea>
+        </div>
+
+        <div class="field" id="field-tried">
+          <label for="tried">What I have already tried</label>
+          <span class="hint">Optional &mdash; leave blank if you haven't tried anything yet</span>
+          <textarea id="tried" name="tried"></textarea>
+        </div>
+
+        <div class="field" id="field-stuck">
+          <label for="stuck">Where I am stuck<span class="required-mark">*</span></label>
+          <span class="hint">Be as specific as you can</span>
+          <textarea id="stuck" name="stuck"></textarea>
+          <p class="field-error">Please describe where you're stuck.</p>
+        </div>
+
+        <div class="field" id="field-goal">
+          <label for="goal">What I want to understand after office hours<span class="required-mark">*</span></label>
+          <span class="hint">What should be clear by the time you leave?</span>
+          <textarea id="goal" name="goal"></textarea>
+          <p class="field-error">Please fill in what you want to understand.</p>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-primary" id="create-btn">Create My Prep Sheet</button>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn-text" id="example-btn">Try an example</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="outline-view" hidden>
+    <div class="card">
+      <h2>Discussion Outline</h2>
+      <div id="outline-content"></div>
+    </div>
+
+    <div class="btn-row">
+      <button type="button" class="btn-secondary" id="copy-btn">Copy</button>
+      <button type="button" class="btn-secondary" id="print-btn">Print</button>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn-secondary" id="edit-btn">Edit answers</button>
+      <button type="button" class="btn-secondary" id="start-over-btn">Start over</button>
+    </div>
+    <p id="copy-confirm" role="status">Copied to clipboard.</p>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var formView = document.getElementById('form-view');
+  var outlineView = document.getElementById('outline-view');
+  var form = document.getElementById('prep-form');
+  var summaryError = document.getElementById('form-summary-error');
+  var outlineContent = document.getElementById('outline-content');
+  var copyConfirm = document.getElementById('copy-confirm');
+
+  var fields = {
+    course: { el: document.getElementById('course'), label: 'Course name', required: false },
+    topic: { el: document.getElementById('topic'), label: 'Topic or assignment', required: true },
+    understand: { el: document.getElementById('understand'), label: 'What I understand so far', required: false },
+    tried: { el: document.getElementById('tried'), label: 'What I have already tried', required: false },
+    stuck: { el: document.getElementById('stuck'), label: 'Where I am stuck', required: true },
+    goal: { el: document.getElementById('goal'), label: 'What I want to understand after office hours', required: true }
+  };
+
+  var EXAMPLE = {
+    course: 'CS 201 (example)',
+    topic: 'Example: Assignment 3, Problem 2 — recursive binary search',
+    understand: 'Example: I understand how binary search works on paper and I can trace through it by hand on a sorted list.',
+    tried: 'Example: I tried writing the recursive function and tested it on a small array, but I added print statements and it looks like my base case never gets hit.',
+    stuck: "Example: My function seems to loop forever or hit a stack overflow on arrays larger than 5 elements, and I can't tell if it's the base case or how I'm updating the low/high indexes.",
+    goal: "Example: I want to understand why my base case isn't triggering and how to correctly narrow the search range each call."
+  };
+
+  function clearFieldError(key) {
+    var wrapper = document.getElementById('field-' + key);
+    if (wrapper) wrapper.classList.remove('has-error');
+  }
+
+  function setFieldError(key) {
+    var wrapper = document.getElementById('field-' + key);
+    if (wrapper) wrapper.classList.add('has-error');
+  }
+
+  function validate() {
+    var missing = [];
+    Object.keys(fields).forEach(function (key) {
+      var f = fields[key];
+      clearFieldError(key);
+      if (f.required && f.el.value.trim() === '') {
+        setFieldError(key);
+        missing.push(f.label);
+      }
+    });
+
+    if (missing.length > 0) {
+      summaryError.textContent = 'Please fill in the required field' +
+        (missing.length > 1 ? 's' : '') + ': ' + missing.join(', ') + '.';
+      summaryError.classList.add('visible');
+      var firstKey = Object.keys(fields).find(function (k) {
+        return fields[k].required && fields[k].el.value.trim() === '';
+      });
+      if (firstKey) fields[firstKey].el.focus();
+      return false;
+    }
+
+    summaryError.classList.remove('visible');
+    summaryError.textContent = '';
+    return true;
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderBlock(title, value) {
+    var trimmed = value.trim();
+    var html = '<div class="outline-block"><h3>' + escapeHtml(title) + '</h3>';
+    if (trimmed === '') {
+      html += '<p class="outline-empty">Not provided.</p>';
+    } else {
+      html += '<p class="outline-text">' + escapeHtml(trimmed) + '</p>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // Fixed set of starter questions. Two are built by quoting the
+  // student's own "stuck" and "goal" text back into a question frame;
+  // the rest are generic, always-applicable prompts. Nothing here is
+  // generated or inferred about the student's actual problem.
+  function buildQuestions(stuck, goal) {
+    return [
+      'Can you help me understand why this is happening: "' + stuck + '"?',
+      'Can you walk me through where my approach breaks down, step by step?',
+      'Is there a concept or step I might be missing that would make this click?',
+      'Is there a smaller or simpler example I could try to isolate the problem?',
+      'Before I leave, can we make sure I understand this: "' + goal + '"?',
+      'How can I check on my own that a fix actually works, not just appears to work?'
+    ];
+  }
+
+  function renderQuestionsBlock(stuck, goal) {
+    var questions = buildQuestions(stuck, goal);
+    var html = '<div class="outline-block"><h3>Questions to Ask During Office Hours</h3>';
+    html += '<ol class="outline-questions">';
+    questions.forEach(function (q) {
+      html += '<li>' + escapeHtml(q) + '</li>';
+    });
+    html += '</ol></div>';
+    return html;
+  }
+
+  function buildOutline() {
+    var course = fields.course.el.value.trim();
+    var html = '';
+
+    if (course !== '') {
+      html += renderBlock('Course', course);
+    }
+    html += renderBlock('Topic / Assignment', fields.topic.el.value);
+    html += renderBlock('What I Understand So Far', fields.understand.el.value);
+    html += renderBlock('What I Have Already Tried', fields.tried.el.value);
+    html += renderBlock('Where I Am Stuck', fields.stuck.el.value);
+    html += renderBlock('What I Want to Understand After Office Hours', fields.goal.el.value);
+    html += renderQuestionsBlock(fields.stuck.el.value.trim(), fields.goal.el.value.trim());
+
+    outlineContent.innerHTML = html;
+  }
+
+  function buildOutlineText() {
+    var lines = [];
+    var course = fields.course.el.value.trim();
+
+    lines.push('OFFICE HOURS PREP SHEET');
+    lines.push('');
+    if (course !== '') {
+      lines.push('Course: ' + course);
+      lines.push('');
+    }
+    lines.push('Topic / Assignment:');
+    lines.push(fields.topic.el.value.trim() || '(not provided)');
+    lines.push('');
+    lines.push('What I Understand So Far:');
+    lines.push(fields.understand.el.value.trim() || '(not provided)');
+    lines.push('');
+    lines.push('What I Have Already Tried:');
+    lines.push(fields.tried.el.value.trim() || '(not provided)');
+    lines.push('');
+    lines.push('Where I Am Stuck:');
+    lines.push(fields.stuck.el.value.trim() || '(not provided)');
+    lines.push('');
+    lines.push('What I Want to Understand After Office Hours:');
+    lines.push(fields.goal.el.value.trim() || '(not provided)');
+    lines.push('');
+    lines.push('Questions to Ask During Office Hours:');
+    buildQuestions(fields.stuck.el.value.trim(), fields.goal.el.value.trim()).forEach(function (q, i) {
+      lines.push((i + 1) + '. ' + q);
+    });
+
+    return lines.join('\n');
+  }
+
+  function showOutline() {
+    buildOutline();
+    formView.hidden = true;
+    outlineView.hidden = false;
+    copyConfirm.classList.remove('visible');
+    outlineView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function showForm() {
+    outlineView.hidden = true;
+    formView.hidden = false;
+    formView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (validate()) {
+      showOutline();
+    }
+  });
+
+  document.getElementById('example-btn').addEventListener('click', function () {
+    var hasContent = Object.keys(fields).some(function (key) {
+      return fields[key].el.value.trim() !== '';
+    });
+    if (hasContent) {
+      var ok = window.confirm('This will replace your current answers with example answers. Continue?');
+      if (!ok) return;
+    }
+    Object.keys(EXAMPLE).forEach(function (key) {
+      fields[key].el.value = EXAMPLE[key];
+    });
+    Object.keys(fields).forEach(function (key) { clearFieldError(key); });
+    summaryError.classList.remove('visible');
+  });
+
+  document.getElementById('edit-btn').addEventListener('click', showForm);
+
+  document.getElementById('start-over-btn').addEventListener('click', function () {
+    var ok = window.confirm('This will clear all your answers. Start over?');
+    if (!ok) return;
+    form.reset();
+    Object.keys(fields).forEach(function (key) { clearFieldError(key); });
+    summaryError.classList.remove('visible');
+    showForm();
+  });
+
+  document.getElementById('print-btn').addEventListener('click', function () {
+    window.print();
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', function () {
+    var text = buildOutlineText();
+
+    function showCopied() {
+      copyConfirm.classList.add('visible');
+      setTimeout(function () { copyConfirm.classList.remove('visible'); }, 2500);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showCopied, function () {
+        fallbackCopy(text, showCopied);
+      });
+    } else {
+      fallbackCopy(text, showCopied);
+    }
+  });
+
+  function fallbackCopy(text, onDone) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      onDone();
+    } catch (err) {
+      window.alert('Could not copy automatically. Please select and copy the text manually.');
+    }
+    document.body.removeChild(ta);
+  }
+
+})();
+</script>
+</body>
+</html>
